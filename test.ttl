@@ -1,0 +1,509 @@
+@prefix : <https://example.org/lod-pathways/pilot/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sio: <http://semanticscience.org/resource/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix lodp: <https://example.org/lod-pathways/pilot/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://example.org/lod-pathways/pilot/> .
+
+<https://example.org/lod-pathways/pilot/> rdf:type owl:Ontology ;
+                                           <http://purl.org/dc/terms/description> "Terms used in the LOD pathways evidence model that no existing ontology provides yet" ;
+                                           <http://purl.org/dc/terms/license> <https://creativecommons.org/publicdomain/zero/1.0/> ;
+                                           <http://purl.org/dc/terms/title> "LOD pathways placeholder vocabulary" ;
+                                           rdfs:label "LOD-pathways placeholder vocabulary (draft)" .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/description
+<http://purl.org/dc/terms/description> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/license
+<http://purl.org/dc/terms/license> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/title
+<http://purl.org/dc/terms/title> rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://example.org/lod-pathways/pilot/anchoredInPathway
+lodp:anchoredInPathway rdf:type owl:ObjectProperty ;
+                       rdfs:comment "The PlantMetWiki pathway (http://rdf-plantmetwiki.bioinformatics.nl/pathways/PC<n>) the claim is attached to." ;
+                       rdfs:label "anchored in pathway" .
+
+
+###  https://example.org/lod-pathways/pilot/anchoredToMetabolite
+lodp:anchoredToMetabolite rdf:type owl:ObjectProperty ;
+                          rdfs:comment "The PlantMetWiki metabolite, as the identifiers.org InChIKey IRI that PlantMetWiki uses (wp:bdbInChIKey)." ;
+                          rdfs:label "anchored to metabolite" .
+
+
+###  https://example.org/lod-pathways/pilot/batchFile
+lodp:batchFile rdf:type owl:ObjectProperty ;
+               rdfs:comment "The mzmine batch file (XML) with all parameters of a feature-processing run." ;
+               rdfs:label "batch file" .
+
+
+###  https://example.org/lod-pathways/pilot/contrast
+lodp:contrast rdf:type owl:ObjectProperty ;
+              rdfs:comment "The comparison a differential result refers to: two conditions (treatment, tissue, time point) in a stated direction." ;
+              rdfs:label "contrast" .
+
+
+###  https://example.org/lod-pathways/pilot/dataset
+lodp:dataset rdf:type owl:ObjectProperty ;
+             rdfs:comment "The dataset (e.g. a MetaboLights study) the feature comes from." ;
+             rdfs:label "dataset" .
+
+
+###  https://example.org/lod-pathways/pilot/feature
+lodp:feature rdf:type owl:ObjectProperty ;
+             rdfs:range lodp:MetaboliteFeature ;
+             rdfs:label "feature" .
+
+
+###  https://example.org/lod-pathways/pilot/hasMass2Motif
+lodp:hasMass2Motif rdf:type owl:ObjectProperty ;
+                   rdfs:domain lodp:MetaboliteFeature ;
+                   rdfs:range lodp:Mass2Motif ;
+                   rdfs:label "has Mass2Motif" .
+
+
+###  https://example.org/lod-pathways/pilot/mibigMatchEvidence
+lodp:mibigMatchEvidence rdf:type owl:ObjectProperty ;
+                        rdfs:comment "Evidence node for the KnownClusterBLAST match to a MIBiG cluster." ;
+                        rdfs:label "MIBiG match evidence" .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://example.org/lod-pathways/pilot/adjustedPValue
+lodp:adjustedPValue rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:double ;
+                    rdfs:comment "p-value after correction for multiple testing (0-1); the correction method is stated next to it." ;
+                    rdfs:label "adjusted p-value" .
+
+
+###  https://example.org/lod-pathways/pilot/agreeingTool
+lodp:agreeingTool rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:string ;
+                  rdfs:comment "A tool that proposed the consensus structure." ;
+                  rdfs:label "agreeing tool" .
+
+
+###  https://example.org/lod-pathways/pilot/agreementScore
+lodp:agreementScore rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:double ;
+                    rdfs:comment "Consensus score: 1.0 (full) or 0.5 (partial)." ;
+                    rdfs:label "agreement score" .
+
+
+###  https://example.org/lod-pathways/pilot/anchorTier
+lodp:anchorTier rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:string ;
+                rdfs:comment "How the anchor was established; for several anchors, the weakest one used. One of: curated, gene_direct, gene_locus, structure_match, gene_uniprot, gene_ec, mass_match (strongest to weakest)." ;
+                rdfs:label "anchor tier" .
+
+
+###  https://example.org/lod-pathways/pilot/anchoredSide
+lodp:anchoredSide rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:string ;
+                  rdfs:comment "For gene-metabolite associations: which side was found in PlantMetWiki (gene, metabolite or both)." ;
+                  rdfs:label "anchored side" .
+
+
+###  https://example.org/lod-pathways/pilot/candidateCount
+lodp:candidateCount rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:integer ;
+                    rdfs:comment "Number of PlantMetWiki metabolites matching the same feature and adduct." ;
+                    rdfs:label "candidate count" .
+
+
+###  https://example.org/lod-pathways/pilot/clusterPValue
+lodp:clusterPValue rdf:type owl:DatatypeProperty ;
+                   rdfs:range xsd:double ;
+                   rdfs:comment "ClusterONE p-value of the functional cluster (0-1)." ;
+                   rdfs:label "cluster p-value" .
+
+
+###  https://example.org/lod-pathways/pilot/coreDomain
+lodp:coreDomain rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Core enzyme domain (pHMM) that triggered the rule, e.g. SQHop_cyclase_N." ;
+                rdfs:label "core domain" .
+
+
+###  https://example.org/lod-pathways/pilot/decayRate
+lodp:decayRate rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:integer ;
+               rdfs:comment "MEANtools: decay rate of the edge weight exp(-(MR-1)/DR)." ;
+               rdfs:label "decay rate" .
+
+
+###  https://example.org/lod-pathways/pilot/detectionRule
+lodp:detectionRule rdf:type owl:DatatypeProperty ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "plantiSMASH rule (BGC type) that detected the cluster, e.g. terpene. Hybrids have several." ;
+                   rdfs:label "detection rule" .
+
+
+###  https://example.org/lod-pathways/pilot/dreamsSimilarity
+lodp:dreamsSimilarity rdf:type owl:DatatypeProperty ;
+                      rdfs:range xsd:double ;
+                      rdfs:label "DreaMS similarity" .
+
+
+###  https://example.org/lod-pathways/pilot/edgeWeight
+lodp:edgeWeight rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:double ;
+                rdfs:comment "Weight derived from the mutual rank and the decay rate (0-1)." ;
+                rdfs:label "edge weight" .
+
+
+###  https://example.org/lod-pathways/pilot/featureId
+lodp:featureId rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:string ;
+               rdfs:comment "Identifier of the feature in its dataset." ;
+               rdfs:label "feature identifier" .
+
+
+###  https://example.org/lod-pathways/pilot/fractionPathwayECs
+lodp:fractionPathwayECs rdf:type owl:DatatypeProperty ;
+                        rdfs:range xsd:double ;
+                        rdfs:comment "Shared ECs divided by the pathway's ECs (0-1)." ;
+                        rdfs:label "fraction of pathway ECs" .
+
+
+###  https://example.org/lod-pathways/pilot/fractionPathwayGenes
+lodp:fractionPathwayGenes rdf:type owl:DatatypeProperty ;
+                          rdfs:range xsd:double ;
+                          rdfs:comment "Shared genes divided by the pathway's genes (0-1)." ;
+                          rdfs:label "fraction of pathway genes" .
+
+
+###  https://example.org/lod-pathways/pilot/functionalCluster
+lodp:functionalCluster rdf:type owl:DatatypeProperty ;
+                       rdfs:range xsd:string ;
+                       rdfs:comment "Identifier of the MEANtools functional cluster (ClusterONE) the pair belongs to." ;
+                       rdfs:label "functional cluster" .
+
+
+###  https://example.org/lod-pathways/pilot/geneAnchorTier
+lodp:geneAnchorTier rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:string ;
+                    rdfs:comment "Tier of the gene-side anchor: gene_locus, gene_uniprot or gene_ec." ;
+                    rdfs:label "gene anchor tier" .
+
+
+###  https://example.org/lod-pathways/pilot/genomeAssembly
+lodp:genomeAssembly rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:string ;
+                    rdfs:comment "Assembly accession the BGC was predicted on, e.g. GCF_000001735.4." ;
+                    rdfs:label "genome assembly" .
+
+
+###  https://example.org/lod-pathways/pilot/identificationTier
+lodp:identificationTier rdf:type owl:DatatypeProperty ;
+                        rdfs:range xsd:string ;
+                        rdfs:comment "gnps_library, consensus_inchi, sirius, ms2query_exact or dreams." ;
+                        rdfs:label "identification tier" .
+
+
+###  https://example.org/lod-pathways/pilot/libraryCompoundName
+lodp:libraryCompoundName rdf:type owl:DatatypeProperty ;
+                         rdfs:range xsd:string ;
+                         rdfs:label "library compound name" .
+
+
+###  https://example.org/lod-pathways/pilot/linkTier
+lodp:linkTier rdf:type owl:DatatypeProperty ;
+              rdfs:range xsd:string ;
+              rdfs:comment "gene_direct (same gene ID), gene_uniprot (same UniProt enzyme) or gene_ec (same EC number)." ;
+              rdfs:label "link tier" .
+
+
+###  https://example.org/lod-pathways/pilot/linkingEC
+lodp:linkingEC rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:string ;
+               rdfs:comment "An EC number shared by the BGC and the pathway." ;
+               rdfs:label "linking EC" .
+
+
+###  https://example.org/lod-pathways/pilot/linkingGene
+lodp:linkingGene rdf:type owl:DatatypeProperty ;
+                 rdfs:range xsd:string ;
+                 rdfs:comment "A gene (locus) shared by the BGC and the pathway." ;
+                 rdfs:label "linking gene" .
+
+
+###  https://example.org/lod-pathways/pilot/linkingProtein
+lodp:linkingProtein rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:string ;
+                    rdfs:comment "A UniProt accession shared by the BGC and the pathway." ;
+                    rdfs:label "linking protein" .
+
+
+###  https://example.org/lod-pathways/pilot/log2FoldChange
+lodp:log2FoldChange rdf:type owl:DatatypeProperty ;
+                    rdfs:range xsd:double ;
+                    rdfs:comment "Log2 of the expression ratio between the two conditions of a contrast (for example the DESeq2 log2FoldChange); positive when higher in the first condition." ;
+                    rdfs:label "log2 fold change" .
+
+
+###  https://example.org/lod-pathways/pilot/massErrorPpm
+lodp:massErrorPpm rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:double ;
+                  rdfs:comment "Difference between the measured and the calculated m/z of a mass match, in ppm." ;
+                  rdfs:label "mass error (ppm)" .
+
+
+###  https://example.org/lod-pathways/pilot/massTolerancePpm
+lodp:massTolerancePpm rdf:type owl:DatatypeProperty ;
+                      rdfs:range xsd:double ;
+                      rdfs:comment "Tolerance used for a mass match, in ppm." ;
+                      rdfs:label "mass tolerance (ppm)" .
+
+
+###  https://example.org/lod-pathways/pilot/matchCategory
+lodp:matchCategory rdf:type owl:DatatypeProperty ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "What the annotation tools agree on: inchi, class, superclass or pathway." ;
+                   rdfs:label "match category" .
+
+
+###  https://example.org/lod-pathways/pilot/matchLevel
+lodp:matchLevel rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:string ;
+                rdfs:comment "What the structure match compared: connectivity (first InChIKey block) or full." ;
+                rdfs:label "match level" .
+
+
+###  https://example.org/lod-pathways/pilot/matchType
+lodp:matchType rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:string ;
+               rdfs:comment "Consensus agreement: full (3 of 3 tools) or partial (2 of 3)." ;
+               rdfs:label "match type" .
+
+
+###  https://example.org/lod-pathways/pilot/metaboliteAnchorTier
+lodp:metaboliteAnchorTier rdf:type owl:DatatypeProperty ;
+                          rdfs:range xsd:string ;
+                          rdfs:comment "Tier of the metabolite-side anchor: mass_match." ;
+                          rdfs:label "metabolite anchor tier" .
+
+
+###  https://example.org/lod-pathways/pilot/motifProbability
+lodp:motifProbability rdf:type owl:DatatypeProperty ;
+                      rdfs:range xsd:double ;
+                      rdfs:comment "Probability of a Mass2Motif for a feature (0-1)." ;
+                      rdfs:label "motif probability" .
+
+
+###  https://example.org/lod-pathways/pilot/ms2queryModelScore
+lodp:ms2queryModelScore rdf:type owl:DatatypeProperty ;
+                        rdfs:range xsd:double ;
+                        rdfs:label "MS2Query model score" .
+
+
+###  https://example.org/lod-pathways/pilot/mutualRank
+lodp:mutualRank rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:double ;
+                rdfs:comment "Mutual rank of the gene-metabolite pair (1 = best)." ;
+                rdfs:label "mutual rank" .
+
+
+###  https://example.org/lod-pathways/pilot/nPathwayGenes
+lodp:nPathwayGenes rdf:type owl:DatatypeProperty ;
+                   rdfs:range xsd:integer ;
+                   rdfs:comment "Genes of the pathway that PlantMetWiki lists with the same gene IDs as the BGC." ;
+                   rdfs:label "number of pathway genes" .
+
+
+###  https://example.org/lod-pathways/pilot/nSharedEC
+lodp:nSharedEC rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:integer ;
+               rdfs:label "number of shared ECs" .
+
+
+###  https://example.org/lod-pathways/pilot/nSharedGenes
+lodp:nSharedGenes rdf:type owl:DatatypeProperty ;
+                  rdfs:range xsd:integer ;
+                  rdfs:label "number of shared genes" .
+
+
+###  https://example.org/lod-pathways/pilot/originalEvidenceCode
+lodp:originalEvidenceCode rdf:type owl:DatatypeProperty ;
+                          rdfs:range xsd:string ;
+                          rdfs:comment "The PlantCyc evidence code as stored in PlantMetWiki (EV-...)." ;
+                          rdfs:label "original evidence code" .
+
+
+###  https://example.org/lod-pathways/pilot/percentGenesSimilar
+lodp:percentGenesSimilar rdf:type owl:DatatypeProperty ;
+                         rdfs:range xsd:integer ;
+                         rdfs:comment "KnownClusterBLAST: percentage of the MIBiG cluster's genes with a similar gene in the BGC (0-100)." ;
+                         rdfs:label "percent genes similar" .
+
+
+###  https://example.org/lod-pathways/pilot/precursorMzDifference
+lodp:precursorMzDifference rdf:type owl:DatatypeProperty ;
+                           rdfs:range xsd:double ;
+                           rdfs:comment "In Da, between the query and the library match." ;
+                           rdfs:label "precursor m/z difference" .
+
+
+###  https://example.org/lod-pathways/pilot/predictionScore
+lodp:predictionScore rdf:type owl:DatatypeProperty ;
+                     rdfs:range xsd:double ;
+                     rdfs:comment "Score given by a machine-learning model to a predicted link. Whether it is a calibrated probability has to be stated per model." ;
+                     rdfs:label "prediction score" .
+
+
+###  https://example.org/lod-pathways/pilot/siriusConfidenceApprox
+lodp:siriusConfidenceApprox rdf:type owl:DatatypeProperty ;
+                            rdfs:range xsd:double ;
+                            rdfs:label "SIRIUS approximate confidence" .
+
+
+###  https://example.org/lod-pathways/pilot/software
+lodp:software rdf:type owl:DatatypeProperty ;
+              rdfs:range xsd:string ;
+              rdfs:comment "Name of the tool or resource." ;
+              rdfs:label "software" .
+
+
+###  https://example.org/lod-pathways/pilot/solycLocus
+lodp:solycLocus rdf:type owl:DatatypeProperty ;
+                rdfs:range xsd:string ;
+                rdfs:comment "Tomato gene locus (SGN/ITAG, e.g. Solyc07g043480) under which PlantMetWiki lists a gene node of a pathway." ;
+                rdfs:label "Solyc locus" .
+
+
+###  https://example.org/lod-pathways/pilot/usesTool
+lodp:usesTool rdf:type owl:DatatypeProperty ;
+              rdfs:range xsd:string ;
+              rdfs:comment "A tool, with its version, that a pipeline run combines." ;
+              rdfs:label "uses tool" .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://semanticscience.org/resource/SIO_001257
+sio:SIO_001257 rdf:type owl:Class .
+
+
+###  http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement
+rdf:Statement rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Activity
+prov:Activity rdf:type owl:Class .
+
+
+###  https://example.org/lod-pathways/pilot/AnnotationToolRun
+lodp:AnnotationToolRun rdf:type owl:Class ;
+                       rdfs:subClassOf lodp:Run ;
+                       rdfs:comment "SIRIUS, MS2Query, DreaMS or a GNPS library search." ;
+                       rdfs:label "annotation tool run" .
+
+
+###  https://example.org/lod-pathways/pilot/BGCPathwayLink
+lodp:BGCPathwayLink rdf:type owl:Class ;
+                    rdfs:subClassOf lodp:Claim ;
+                    rdfs:comment "A predicted biosynthetic gene cluster overlaps a PlantMetWiki pathway (case 1)." ;
+                    rdfs:label "BGC-pathway link" .
+
+
+###  https://example.org/lod-pathways/pilot/Claim
+lodp:Claim rdf:type owl:Class ;
+           rdfs:comment "A statement that links data (a prediction, an association, an annotation) to PlantMetWiki. Every claim carries evidence and is anchored to a PlantMetWiki node." ;
+           rdfs:label "claim" .
+
+
+###  https://example.org/lod-pathways/pilot/ConsensusAnnotationRun
+lodp:ConsensusAnnotationRun rdf:type owl:Class ;
+                            rdfs:subClassOf lodp:Run ;
+                            rdfs:label "consensus annotation run" .
+
+
+###  https://example.org/lod-pathways/pilot/GeneMetaboliteAssociation
+lodp:GeneMetaboliteAssociation rdf:type owl:Class ;
+                               rdfs:subClassOf sio:SIO_001257 ,
+                                               lodp:Claim ;
+                               rdfs:comment "A gene and a metabolite feature fall into the same functional cluster of a paired-omics analysis (case 2)." ;
+                               rdfs:label "gene-metabolite association" .
+
+
+###  https://example.org/lod-pathways/pilot/LinkingRun
+lodp:LinkingRun rdf:type owl:Class ;
+                rdfs:subClassOf lodp:Run ;
+                rdfs:comment "The mapping of predictions to PlantMetWiki nodes (genes to pathways, features to metabolites)." ;
+                rdfs:label "linking run" .
+
+
+###  https://example.org/lod-pathways/pilot/MEANtoolsRun
+lodp:MEANtoolsRun rdf:type owl:Class ;
+                  rdfs:subClassOf lodp:Run ;
+                  rdfs:label "MEANtools run" .
+
+
+###  https://example.org/lod-pathways/pilot/Mass2Motif
+lodp:Mass2Motif rdf:type owl:Class ;
+                rdfs:comment "A topic of an MS2LDA model: a pattern of fragment and neutral-loss m/z values that co-occur in MS/MS spectra." ;
+                rdfs:label "Mass2Motif" .
+
+
+###  https://example.org/lod-pathways/pilot/MetaboliteAnnotation
+lodp:MetaboliteAnnotation rdf:type owl:Class ;
+                          rdfs:subClassOf lodp:Claim ;
+                          rdfs:comment "An untargeted MS feature is annotated as a PlantMetWiki metabolite (case 3)." ;
+                          rdfs:label "metabolite annotation" .
+
+
+###  https://example.org/lod-pathways/pilot/MetaboliteFeature
+lodp:MetaboliteFeature rdf:type owl:Class ;
+                       rdfs:comment "An untargeted mass-spectrometry feature (m/z, retention time) from a dataset." ;
+                       rdfs:label "metabolite feature" .
+
+
+###  https://example.org/lod-pathways/pilot/PathwayMembershipClaim
+lodp:PathwayMembershipClaim rdf:type owl:Class ;
+                            rdfs:subClassOf rdf:Statement ,
+                                            lodp:Claim ;
+                            rdfs:comment "Evidence for a node of a PlantMetWiki pathway, reified as an rdf:Statement (case 4)." ;
+                            rdfs:label "pathway membership claim" .
+
+
+###  https://example.org/lod-pathways/pilot/PlantCycCuration
+lodp:PlantCycCuration rdf:type owl:Class ;
+                      rdfs:subClassOf lodp:Run ;
+                      rdfs:label "PlantCyc curation" .
+
+
+###  https://example.org/lod-pathways/pilot/PlantiSMASHRun
+lodp:PlantiSMASHRun rdf:type owl:Class ;
+                    rdfs:subClassOf lodp:Run ;
+                    rdfs:label "plantiSMASH run" .
+
+
+###  https://example.org/lod-pathways/pilot/Run
+lodp:Run rdf:type owl:Class ;
+         rdfs:subClassOf prov:Activity ;
+         rdfs:comment "One run of a tool, a pipeline or a curation effort. Carries software, version and input data." ;
+         rdfs:label "run" .
+
+
+###  Generated by the OWL API (version 4.5.29) https://github.com/owlcs/owlapi
