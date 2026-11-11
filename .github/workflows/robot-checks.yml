@@ -1,0 +1,63 @@
+# Save as: .github/workflows/robot-checks.yml
+name: ROBOT checks
+
+# Same triggers as the specification checks, limited to the vocabulary and shapes.
+on:
+  pull_request:
+    paths:
+      - "shape_constraints/**"
+      - ".github/workflows/robot-checks.yml"
+  push:
+    branches: [main, dev]
+    paths:
+      - "shape_constraints/**"
+      - ".github/workflows/robot-checks.yml"
+  workflow_dispatch:
+
+# Read-only: this workflow only checks, it never commits.
+permissions:
+  contents: read
+
+env:
+  ROBOT_VERSION: "1.9.7"   # pinned, like pyshacl and rdflib in specification-checks.yml
+  VOCAB: shape_constraints/vocab/lodp.ttl
+
+jobs:
+  robot:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install ROBOT
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -sSL -o "$HOME/bin/robot.jar" \
+            "https://github.com/ontodev/robot/releases/download/v${ROBOT_VERSION}/robot.jar"
+          printf '#!/bin/sh\nexec java -jar "$HOME/bin/robot.jar" "$@"\n' > "$HOME/bin/robot"
+          chmod +x "$HOME/bin/robot"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: The vocabulary can be parsed and converted to OWL
+        run: |
+          mkdir -p build
+          robot convert --input "$VOCAB" --output build/lodp.owl
+
+      - name: Quality report of the vocabulary (fails on ERROR)
+        run: robot report --input "$VOCAB" --output build/lodp_report.tsv
+
+      - name: Show the report
+        if: always()
+        run: |
+          if [ -f build/lodp_report.tsv ]; then column -t -s $'\t' build/lodp_report.tsv; fi
+
+      - name: Upload the report and the OWL file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-report
+          path: build/
