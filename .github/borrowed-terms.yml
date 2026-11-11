@@ -1,0 +1,95 @@
+# Save as: .github/workflows/borrowed-terms.yml
+name: Borrowed term checks
+
+# Checks that every term borrowed from other ontologies (ECO, PSI-MS, STATO, ...)
+# still exists and is not obsolete. Runs on changes, and weekly because upstream
+# ontologies can retire terms without any change in this repository.
+on:
+  pull_request:
+    paths:
+      - "shape_constraints/**"
+      - ".github/workflows/borrowed-terms.yml"
+  push:
+    branches: [main, dev]
+    paths:
+      - "shape_constraints/**"
+      - ".github/workflows/borrowed-terms.yml"
+  schedule:
+    - cron: "0 6 * * 1"   # every Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ROBOT_VERSION: "1.9.7"
+  ROBOT_JAVA_ARGS: "-Xmx4G"
+  # Terms from vocabularies we cannot load as ontologies; reported but not failing
+  IGNORE_PATTERN: "vocabularies.wikipathways.org"
+
+jobs:
+  borrowed-terms:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install rdflib and ROBOT
+        run: |
+          pip install rdflib==7.6.0
+          mkdir -p "$HOME/bin"
+          curl -sSL -o "$HOME/bin/robot.jar" \
+            "https://github.com/ontodev/robot/releases/download/v${ROBOT_VERSION}/robot.jar"
+          printf '#!/bin/sh\nexec java $ROBOT_JAVA_ARGS -jar "$HOME/bin/robot.jar" "$@"\n' > "$HOME/bin/robot"
+          chmod +x "$HOME/bin/robot"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: List the borrowed terms
+        run: python3 shape_constraints/list_borrowed_terms.py
+
+      - name: Build the lookup query
+        run: python3 shape_constraints/build_check_query.py
+
+      - name: Download the source ontologies
+        run: |
+          mkdir -p ontologies && cd ontologies
+          for o in eco ms bfo obi ro so stato swo; do
+            curl -sSL -o "$o.owl" "http://purl.obolibrary.org/obo/$o.owl"
+          done
+          curl -sSL -o sio.owl  http://semanticscience.org/ontology/sio.owl
+          curl -sSL -o edam.owl http://edamontology.org/EDAM.owl
+          ls -lh
+
+      - name: Look up every borrowed term
+        run: |
+          inputs=""
+          for f in ontologies/*.owl; do inputs="$inputs --input $f"; done
+          robot merge $inputs query --query check_borrowed.rq borrowed_check.tsv
+          column -t -s $'\t' borrowed_check.tsv
+
+      - name: Fail if a term is missing or retired
+        run: |
+          problems=$(tail -n +2 borrowed_check.tsv | grep -v '"ok"' | grep -v "$IGNORE_PATTERN" || true)
+          if [ -n "$problems" ]; then
+            echo "Borrowed terms that are missing or retired:"
+            echo "$problems" | column -t -s $'\t'
+            exit 1
+          fi
+          echo "All borrowed terms exist and are current."
+
+      - name: Upload the results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: borrowed-terms
+          path: |
+            borrowed_terms.tsv
+            borrowed_check.tsv
